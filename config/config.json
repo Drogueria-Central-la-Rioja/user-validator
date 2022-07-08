@@ -1,7 +1,7 @@
 {
   "development": {
-    "username": "dev_user",
-    "password": "i-hate-window$",
+    "username": "root",
+    "password": "",
     "database": "user_validator",
     "host": "localhost",
     "dialect": "mysql"

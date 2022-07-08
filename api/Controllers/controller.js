@@ -1,6 +1,5 @@
-let properties = require("../package.json");
-
-let weather = require("../service/weather");
+let properties = require("../../package.json");
+let weather = require("../Services/weather");
 
 let controllers = {
     about: (req, res)=>{

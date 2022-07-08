@@ -7,7 +7,7 @@ module.exports = {
       nombre: 'administrator',
       description: 'administrator'
     }])
-    queryInterface.bulkInsert('Usuarios' [{
+    queryInterface.bulkInsert('Usuarios', [{
       usuario: 'admin',
       password: 'admin',  // TODO: Change this this should be encrypted
       idPersona: null,
