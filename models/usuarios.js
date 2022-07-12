@@ -3,12 +3,22 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Usuarios extends Model {}
+  class Usuarios extends Model {
+
+    // Relationships
+    static associate(models) {
+      Usuarios.hasMany(models.Perfiles_Usuarios, { as: 'perfilesUsuario', foreignKey: 'usuario_id' });
+    }
+  }
+
   Usuarios.init({
-    usuario: DataTypes.STRING,
+    usuario: {
+      type: DataTypes.STRING,
+      unique: true
+    },
     password: DataTypes.STRING,
-    idPersona: DataTypes.INTEGER,
-    idDependencia: DataTypes.INTEGER,
+    persona_id: DataTypes.INTEGER,
+    dependencia_id: DataTypes.INTEGER,
     estado: DataTypes.STRING,
     lastLogin: {
       type: DataTypes.DATE,
@@ -17,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Usuarios',
+    tableName: 'usuarios'
   });
   return Usuarios;
 };
