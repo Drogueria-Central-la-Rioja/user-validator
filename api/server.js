@@ -9,7 +9,11 @@ const app = express();
 // Public response
 app.use(express.static('public'));
 
-// Charge route modules
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+
+// Load routes
 app.use('/users', userRoutes);
 
 app.listen(config.PORT, config.HOST, () => {

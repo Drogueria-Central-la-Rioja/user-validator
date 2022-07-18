@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
 
     // Relationships
     static associate(models) {
+      Usuarios.belongsTo(models.Personas, { as: 'datosPersonales', foreignKey: 'persona_id' });
       Usuarios.hasMany(models.Perfiles_Usuarios, { as: 'perfilesUsuario', foreignKey: 'usuario_id' });
     }
   }
@@ -16,10 +17,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       unique: true
     },
-    password: DataTypes.STRING,
-    persona_id: DataTypes.INTEGER,
+    password:       DataTypes.STRING,
+    persona_id:     DataTypes.INTEGER,
     dependencia_id: DataTypes.INTEGER,
-    estado: DataTypes.STRING,
+    estado:         DataTypes.STRING,
     lastLogin: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW
