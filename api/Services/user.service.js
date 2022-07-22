@@ -20,11 +20,16 @@ module.exports = {
             }
         },{
             include: 'datosPersonales',
+        //    attributes: { exclude: ['password','updatedAt'] },
             transaction
         });
 
         if(newUser.dataValues){
-            return newUser.dataValues;
+            delete newUser.dataValues.password;
+            delete newUser.dataValues.updatedAt;
+            delete newUser.dataValues.datosPersonales.dataValues.id;
+        //    console.log(JSON.stringify(newUser));
+            return newUser;
         }else{
             return null;
         }

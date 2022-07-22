@@ -1,0 +1,73 @@
+{
+    "endpoints_api": [
+        {
+            "description": "Crear Usuario",
+            "url": "${host}:${port}/users/",
+            "type": "POST",
+            "request": {
+                "usuario": "string",
+                "password": "string",
+                "dependencia_id": 1,
+                "estado": "string",
+                "datosPersonales": {
+                    "nombres": "string",
+                    "apellidos": "string",
+                    "dni": 3828321323,
+                    "email": "string",
+                    "telefono": "string",
+                    "domicilio_completo": "string"
+                }
+            },
+            "response": {
+                "status": 200,
+                "message": "string",
+                "data": {
+                    "usuario": {
+                        "id": 10,
+                        "persona_id": 8,
+                        "username": "string",
+                        "dependencia_id": 2,
+                        "estado": "string",
+                        "datosPersonales": {
+                            "nombres": "string",
+                            "apellidos": "string",
+                            "dni": 39239213,
+                            "email": "string@gmail.com",
+                            "telefono": "string",
+                            "domicilio_completo": "string"
+                        },
+                        "lastLogin": "2022-07-18T02:39:05.931Z",
+                        "createdAt": "2022-07-18T02:39:05.932Z"
+                        
+                    },
+                    "token": "string"
+                }
+            }
+        },
+        {
+            "description": "Lista de Usuarios",
+            "url": "${host}:${port}/users/",
+            "type": "GET",
+            "response": {
+                "status": 200,
+                "message": "string",
+                "data": [
+                    {
+                        "username": "string",
+                        "persona_id": 1,
+                        "estado": "string",
+                        "perfilesUsuario": [
+                            {
+                                "estado": "string",
+                                "perfilAsignado": {
+                                    "id": 1,
+                                    "nombre": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,4 +1,5 @@
 # user-validator
+install dependencies: npm install
 
 # Create database instance (Docker way)
 
@@ -33,3 +34,16 @@ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 mysql> CREATE USER 'dev_user'@'%' IDENTIFIED WITH mysql_native_password BY 'i-hate-window$';
 mysql> GRANT ALL PRIVILEGES ON *.* TO 'dev_user'@'%';
 ```
+
+# Create database instance (Windows way from XAMPP)
+
+1) Install XAMPP: modules MySQL and Apache.
+2) Run instances since XAMPP Control Panel.
+3) Open PhpMyAdmin: 'localhost/phpmyadmin/' and create new database: "user_validator".
+4) Create file ".env": copy from ".env.example" and change data if necessary.
+5) Execute migration database: open console in project path.
+    5.1) run migrations: "npx sequelize-cli db:migrate".
+    5.2) run seeders: "npx sequelize-cli db:seed:all".
+
+# Run server
+npm run start

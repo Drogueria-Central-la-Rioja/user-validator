@@ -7,13 +7,13 @@ const { encryptData } = require('../Utils/encryption');
 module.exports = {
     async getUsers(req, res){
         const usuarios = await Usuarios.findAll({
-            attributes: ['usuario', 'persona_id', 'estado'],
+            attributes: ['username', 'persona_id', 'estado'],
             include: {
                 association: 'perfilesUsuario',
                 attributes: ['estado'],
                 include: [{
                     association: 'perfilAsignado',
-                    attributes: ['nombre']
+                    attributes: ['id','nombre']
                 }]
             }
         });
