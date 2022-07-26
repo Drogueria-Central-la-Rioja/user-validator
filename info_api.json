@@ -45,6 +45,59 @@
             }
         },
         {
+            "description": "Modificar Usuario",
+            "url": "${host}:${port}/users/:user_id",
+            "type": "PATCH",
+            "request": {
+                "dependencia_id": 4,
+                "estado": "string",
+                "datosPersonales": {
+                    "nombres": "string",
+                    "apellidos": "string",
+                    "email": "string@gmail.com",
+                    "telefono": "string",
+                    "domicilio_completo": "string"
+                }
+            },
+            "response": {
+                "status": 200,
+                "message": "string",
+                "data": null
+            }
+        },
+        {
+            "description": "Obtener información de un Usuario",
+            "url": "${host}:${port}/users/:user_id",
+            "type": "GET",
+            "request": "",
+            "response": {
+                "status": 200,
+                "message": "string",
+                "data": {
+                    "username": "string",
+                    "persona_id": 5,
+                    "estado": "string",
+                    "datosPersonales": {
+                        "nombres": "string",
+                        "apellidos": "string",
+                        "dni": 39239213,
+                        "telefono": "string",
+                        "email": "string@gmail.com",
+                        "domicilio_completo": "string"
+                    },
+                    "perfilesUsuario": [
+                        {
+                            "estado": "string",
+                            "perfilAsignado": {
+                                "id": 1,
+                                "nombre": "string"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
             "description": "Lista de Usuarios",
             "url": "${host}:${port}/users/",
             "type": "GET",
@@ -69,5 +122,6 @@
                 ]
             }
         }
+
     ]
 }

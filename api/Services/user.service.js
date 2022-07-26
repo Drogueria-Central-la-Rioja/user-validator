@@ -1,22 +1,22 @@
-const { Usuarios } = require('../../models/index');
+const { Usuarios, Personas } = require('../../models/index');
 
 module.exports = {
 
     async create(data, transaction){
 
-        const dataPersona = data.datosPersonales;
+        const dataPersonal = data.datosPersonales;
         const newUser = await Usuarios.create({
             usuario:        data.usuario,
             password:       data.password,
             dependencia_id: data.dependencia_id,
             estado:         'Activo', // Change for Constant(ENUM)
             datosPersonales: {
-                nombres:            dataPersona.nombres,
-                apellidos:          dataPersona.apellidos,
-                dni:                dataPersona.dni,
-                email:              dataPersona.email,
-                telefono:           dataPersona.telefono,
-                domicilio_completo: dataPersona.domicilio_completo
+                nombres:            dataPersonal.nombres,
+                apellidos:          dataPersonal.apellidos,
+                dni:                dataPersonal.dni,
+                email:              dataPersonal.email,
+                telefono:           dataPersonal.telefono,
+                domicilio_completo: dataPersonal.domicilio_completo
             }
         },{
             include: 'datosPersonales',
@@ -36,7 +36,53 @@ module.exports = {
         
     },
 
-    async getUserByName(user_name){
+    async updateData(user_id, data, transaction){
+
+        let user = await Usuarios.findByPk(user_id);
+        let person = await Personas.findByPk(user.dataValues.persona_id);
+
+        await person.update(data.datosPersonales, { transaction });
+        delete data.datosPersonales;
+        await user.update(data, { transaction });
+        return true;
+    },
+
+    async getOne(user_id){
+        console.log('user: '+ user_id)
+        return await Usuarios.findByPk(user_id, {
+            attributes: ['username', 'persona_id', 'estado'],
+            include: [
+                {
+                    association: 'datosPersonales',
+                    attributes: ['nombres','apellidos','dni','telefono','email','domicilio_completo']
+                },
+                {
+                    association: 'perfilesUsuario',
+                    attributes: ['estado'],
+                    include: [{
+                        association: 'perfilAsignado',
+                        attributes: ['id','nombre']
+                    }]
+                }
+            ]
+        });
+    },
+
+    async getAll(){
+        return await Usuarios.findAll({
+            attributes: ['username', 'persona_id', 'estado'],
+            include: {
+                association: 'perfilesUsuario',
+                attributes: ['estado'],
+                include: [{
+                    association: 'perfilAsignado',
+                    attributes: ['id','nombre']
+                }]
+            }
+        });
+    },
+
+    async getByName(user_name){
 
         const user = await Usuarios.findOne({
             where: { usuario: user_name },

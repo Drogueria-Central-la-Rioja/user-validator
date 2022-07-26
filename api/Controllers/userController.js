@@ -6,19 +6,19 @@ const { encryptData } = require('../Utils/encryption');
 
 module.exports = {
     async getUsers(req, res){
-        const usuarios = await Usuarios.findAll({
-            attributes: ['username', 'persona_id', 'estado'],
-            include: {
-                association: 'perfilesUsuario',
-                attributes: ['estado'],
-                include: [{
-                    association: 'perfilAsignado',
-                    attributes: ['id','nombre']
-                }]
-            }
-        });
+        const users = await userService.getAll();
+        return transactionExecutedSuccessfully(res, users);
+    },
 
-        return transactionExecutedSuccessfully(res, usuarios);
+    async getUserInfo(req, res){
+        try {
+            const user = await userService.getOne(req.params.user_id);
+            return transactionExecutedSuccessfully(res, user);
+
+        } catch (error) {
+            console.log(error);
+            return internalServerError(res, error);      
+        }
     },
 
     async createUser(req, res){
@@ -40,6 +40,19 @@ module.exports = {
                     return recordCreationError(res, 'Usuario')
                 }
             });         
+        } catch (error) {
+            console.log(error);
+            return internalServerError(res, error);
+        }
+    },
+
+    async updateUserData(req, res) {
+
+        try {
+            await sequelize.transaction( async (t) => {
+                await userService.updateData(req.params.user_id, req.body, t);
+                return transactionExecutedSuccessfully(res, null);
+            });
         } catch (error) {
             console.log(error);
             return internalServerError(res, error);
