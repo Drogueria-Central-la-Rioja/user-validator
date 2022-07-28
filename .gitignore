@@ -1,6 +1,3 @@
-# config DATABASE
-/config
-
 # Logs
 logs
 *.log

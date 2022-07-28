@@ -3,13 +3,24 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Usuarios extends Model {}
+  class Usuarios extends Model {
+
+    // Relationships
+    static associate(models) {
+      Usuarios.belongsTo(models.Personas, { as: 'datosPersonales', foreignKey: 'persona_id' });
+      Usuarios.hasMany(models.Perfiles_Usuarios, { as: 'perfilesUsuario', foreignKey: 'usuario_id' });
+    }
+  }
+
   Usuarios.init({
-    usuario: DataTypes.STRING,
-    password: DataTypes.STRING,
-    idPersona: DataTypes.INTEGER,
-    idDependencia: DataTypes.INTEGER,
-    estado: DataTypes.STRING,
+    username: {
+      type: DataTypes.STRING,
+      unique: true
+    },
+    password:       DataTypes.STRING,
+    persona_id:     DataTypes.INTEGER,
+    dependencia_id: DataTypes.INTEGER,
+    estado:         DataTypes.STRING,
     lastLogin: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW
@@ -17,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Usuarios',
+    tableName: 'usuarios'
   });
   return Usuarios;
 };
