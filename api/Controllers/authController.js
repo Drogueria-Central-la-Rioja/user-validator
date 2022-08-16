@@ -1,31 +1,47 @@
-const bcrypt = require('bcryptjs');
-const { sequelize } = require('../../models/index');
-const { invalidLoginCredentialsError } = require('../helpers/responses');
+const {
+ generateJWT
+} = require('../helpers/jwt');
+const {
+ invalidLoginCredentialsError,
+ internalServerError,
+ transactionExecutedSuccessfully
+} = require('../helpers/responses');
+const authService = require('../Services/auth.service');
 const userService = require('../Services/user.service');
+const encryption = require('../Utils/encryption');
 
 module.exports = {
 
-    async login(req, res){
+    async login(req, res) {
 
-        const { user_name, password } = req.body;
+        const { username, password } = req.body;
         try {
-            await sequelize.transaction( async(t) =>{
-                const user = await userService.getUserByName(user_name);
+            const user = await userService.getByName(username);
 
-                if(user){
-                    const matchPassword = bcrypt.compareSync(password, user.password);
-
-                    if(!matchPassword){
-                        return invalidLoginCredentialsError(res);
-                    }
-
-                    return res.json({msg: 'OK'});
-                }else{
+            if(user){
+                if(! await encryption.compare(password, user.password)){
                     return invalidLoginCredentialsError(res);
                 }
-            });
+                
+                const token_auth = await generateJWT(user.id, user.name);
+                return res.json({msg: 'Login exitoso', token: token_auth});
+            }else{
+                return invalidLoginCredentialsError(res);
+            }
         }catch(error){
-            return res.json({msg: 'OK'});
+            console.log(error)
+            return internalServerError(res, error);
         }
-    }
+    },
+
+    async logout(req, res) {
+        try {
+            const { token } = req.body;
+            await authService.addTokenToBlacklist(token);   
+            return transactionExecutedSuccessfully(res);
+        } catch (error) {
+            console.log(error);
+            return internalServerError(res, error);
+        }
+    },
 }

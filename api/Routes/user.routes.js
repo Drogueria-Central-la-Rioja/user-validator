@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const userController = require('../Controllers/userController');
 
+// Users Management 
 router.get('/', userController.getUsers);
 router.get('/:user_id', userController.getUserInfo);
 

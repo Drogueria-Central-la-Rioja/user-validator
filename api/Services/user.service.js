@@ -82,11 +82,11 @@ module.exports = {
         });
     },
 
-    async getByName(user_name){
+    async getByName(username){
 
         const user = await Usuarios.findOne({
-            where: { usuario: user_name },
-            attributes: ['id','usuario', 'password', 'persona_id', 'estado', 'lastLogin'],
+            where: { username },
+            attributes: ['id','username', 'password', 'persona_id', 'estado', 'lastLogin'],
         });
 
         if(user.dataValues){

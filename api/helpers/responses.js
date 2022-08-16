@@ -22,6 +22,22 @@ const internalServerError = (res, error) =>{
     });
 }
 
+const badRequestError = (res, error) =>{
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        status:  HTTP_STATUS.BAD_REQUEST,
+        message: 'Faltan datos en la consulta realizada.',
+        cause:   error
+    });
+}
+
+const invalidTokenError = (res, error) =>{
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        status:  HTTP_STATUS.BAD_REQUEST,
+        message: 'Token inválido.',
+        cause:   error
+    });
+}
+
 const transactionExecutedSuccessfully = (res, data) =>{
     return res.status(HTTP_STATUS.OK).json({
         status:  HTTP_STATUS.OK,
@@ -34,5 +50,7 @@ module.exports = {
     invalidLoginCredentialsError,
     recordCreationError,
     internalServerError,
+    badRequestError,
+    invalidTokenError,
     transactionExecutedSuccessfully
 }
