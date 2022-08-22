@@ -6,7 +6,7 @@ module.exports = {
     executeCrons() {
 
         // Delete expired tokens in blacklist
-        cron.schedule('* * 23 * * *', async () => {
+        cron.schedule('* * 22 * * *', async () => {
             try {
                 await sequelize.transaction( async (t) => {
                     const deleted = await Tokens_blacklist.destroy({

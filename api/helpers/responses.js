@@ -46,11 +46,20 @@ const transactionExecutedSuccessfully = (res, data) =>{
     });
 }
 
+const dataNotFound = (res, object) =>{
+    return res.status(HTTP_STATUS.OK).json({
+        status:  HTTP_STATUS.OK,
+        message: `${object} no encontrado/a.`,
+        data: null
+    });
+}
+
 module.exports = {
     invalidLoginCredentialsError,
     recordCreationError,
     internalServerError,
     badRequestError,
     invalidTokenError,
-    transactionExecutedSuccessfully
+    transactionExecutedSuccessfully,
+    dataNotFound
 }

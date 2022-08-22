@@ -1,5 +1,5 @@
 const { Usuarios, sequelize } = require('../../models/index');
-const { transactionExecutedSuccessfully, recordCreationError, internalServerError } = require('../helpers/responses');
+const { transactionExecutedSuccessfully, recordCreationError, internalServerError, badRequestError, dataNotFound } = require('../helpers/responses');
 const userService = require('../Services/user.service');
 const { generateJWT } = require('../helpers/jwt');
 const { encryptData } = require('../Utils/encryption');
@@ -13,8 +13,11 @@ module.exports = {
     async getUserInfo(req, res){
         try {
             const user = await userService.getOne(req.params.user_id);
-            return transactionExecutedSuccessfully(res, user);
-
+            if(user) {
+                return transactionExecutedSuccessfully(res, user);
+            } else {
+                return dataNotFound(res, 'Usuario');
+            }
         } catch (error) {
             console.log(error);
             return internalServerError(res, error);      
@@ -52,6 +55,21 @@ module.exports = {
             await sequelize.transaction( async (t) => {
                 await userService.updateData(req.params.user_id, req.body, t);
                 return transactionExecutedSuccessfully(res, null);
+            });
+        } catch (error) {
+            console.log(error);
+            return internalServerError(res, error);
+        }
+    },
+
+    async deleteUser(req, res) {
+        try {
+            await sequelize.transaction(async (t) => {
+                if(await userService.delete(req.params.user_id, t)) {
+                    return transactionExecutedSuccessfully(res, null);
+                } else {
+                    return dataNotFound(res, 'Usuario');
+                }
             });
         } catch (error) {
             console.log(error);
