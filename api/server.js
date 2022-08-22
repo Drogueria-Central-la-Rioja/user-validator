@@ -1,11 +1,30 @@
 const express = require("express");
 const config = require('../config/config');
 const { sequelize } = require('../models/index');
+const path = require('path');
 
 const userRoutes = require("./Routes/user.routes");
 const publicRoutes = require("./Routes/public.routes");
 const { executeCrons } = require("./Services/cron.service");
-const { validateJWT } = require("./middlewares/validateJWT");
+
+// Swagger
+const swaggerUI = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerSpect = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'User-validator API',
+            version: '1.0.0'
+        },
+        servers: [
+            {
+                url: `http://${config.HOST}:${config.PORT}`
+            }
+        ]
+    },
+    apis: [`${path.join(__dirname, './routes/*.js')}`],
+};
 
 const app = express();
 
@@ -18,7 +37,9 @@ app.use(express.urlencoded({extended:true}));
 
 // Load routes
 app.use('/public', publicRoutes);
-app.use('/users', validateJWT, userRoutes);
+app.use('/users', userRoutes);
+
+app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(swaggerSpect)));
 
 app.listen(config.PORT, config.HOST, () => {
     console.log(`Server running in: http://${config.HOST}:${config.PORT}`);

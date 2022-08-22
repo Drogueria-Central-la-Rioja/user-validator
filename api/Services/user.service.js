@@ -2,7 +2,7 @@ const { Usuarios, Personas } = require('../../models/index');
 
 module.exports = {
 
-    async create(data, transaction){
+    async create(data, transaction) {
 
         const dataPersonal = data.datosPersonales;
         const newUser = await Usuarios.create({
@@ -24,19 +24,19 @@ module.exports = {
             transaction
         });
 
-        if(newUser.dataValues){
+        if(newUser.dataValues) {
             delete newUser.dataValues.password;
             delete newUser.dataValues.updatedAt;
             delete newUser.dataValues.datosPersonales.dataValues.id;
         //    console.log(JSON.stringify(newUser));
             return newUser;
-        }else{
+        } else {
             return null;
         }
         
     },
 
-    async updateData(user_id, data, transaction){
+    async updateData(user_id, data, transaction) {
 
         let user = await Usuarios.findByPk(user_id);
         let person = await Personas.findByPk(user.dataValues.persona_id);
@@ -47,8 +47,7 @@ module.exports = {
         return true;
     },
 
-    async getOne(user_id){
-        console.log('user: '+ user_id)
+    async getOne(user_id) {
         return await Usuarios.findByPk(user_id, {
             attributes: ['username', 'persona_id', 'estado'],
             include: [
@@ -68,7 +67,7 @@ module.exports = {
         });
     },
 
-    async getAll(){
+    async getAll() {
         return await Usuarios.findAll({
             attributes: ['username', 'persona_id', 'estado'],
             include: {
@@ -82,18 +81,25 @@ module.exports = {
         });
     },
 
-    async getByName(username){
-
+    async getByName(username) {
         const user = await Usuarios.findOne({
             where: { username },
             attributes: ['id','username', 'password', 'persona_id', 'estado', 'lastLogin'],
         });
 
-        if(user.dataValues){
+        if(user){
             return user.dataValues;
         }else{
             return null;
         }
-    
+    },
+
+    async delete(user_id, t) {
+        let user = await Usuarios.findByPk(user_id);
+        if(user) {
+            await user.update({ estado: 'Eliminado' }, { transaction: t });
+            return true;
+        }
+        return false;
     }
 };
