@@ -1,4 +1,5 @@
 const { Usuarios, Personas } = require('../../models/index');
+const { USER_STATUS } = require('../Utils/commons');
 
 module.exports = {
 
@@ -95,11 +96,25 @@ module.exports = {
     },
 
     async delete(user_id, t) {
+
+        // Falta verificar perfil: solo admin
+        return await this.changeStatus(user_id, 'Eliminado', t);
+    },
+
+    async changeStatus(user_id, status, t) {
         let user = await Usuarios.findByPk(user_id);
         if(user) {
-            await user.update({ estado: 'Eliminado' }, { transaction: t });
+            await user.update({ estado: status }, { transaction: t });
             return true;
         }
         return false;
+    },
+
+    async isAllowedStatus(status) {
+        const _allowed = Object.values(USER_STATUS);
+        if(!_allowed.includes(status.toUpperCase())){
+            return false;
+        }
+        return true;
     }
 };

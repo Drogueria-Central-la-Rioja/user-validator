@@ -1,8 +1,9 @@
 const { Usuarios, sequelize } = require('../../models/index');
-const { transactionExecutedSuccessfully, recordCreationError, internalServerError, badRequestError, dataNotFound } = require('../helpers/responses');
+const { transactionExecutedSuccessfully, recordCreationError, internalServerError, badRequestError, dataNotFound, dataNotAllowed } = require('../helpers/responses');
 const userService = require('../Services/user.service');
 const { generateJWT } = require('../helpers/jwt');
 const { encryptData } = require('../Utils/encryption');
+const { isAllowedStatus } = require('../Services/user.service');
 
 module.exports = {
     async getUsers(req, res){
@@ -55,6 +56,27 @@ module.exports = {
             await sequelize.transaction( async (t) => {
                 await userService.updateData(req.params.user_id, req.body, t);
                 return transactionExecutedSuccessfully(res, null);
+            });
+        } catch (error) {
+            console.log(error);
+            return internalServerError(res, error);
+        }
+    },
+
+    async changeStatusUser(req, res) {
+        try {
+            // Check allowed status
+            const { nuevo_estado } = req.body;
+            if(! await isAllowedStatus(nuevo_estado)){
+                return dataNotAllowed(res, 'nuevo_estado');
+            }
+
+            await sequelize.transaction(async (t) => {
+                if(await userService.changeStatus(req.params.user_id, nuevo_estado, t)) {
+                    return transactionExecutedSuccessfully(res, null);
+                } else {
+                    return dataNotFound(res, 'Usuario');
+                }
             });
         } catch (error) {
             console.log(error);

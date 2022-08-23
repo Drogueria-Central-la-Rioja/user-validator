@@ -4,6 +4,14 @@ const HTTP_STATUS = {
     INTERNAL_SERVER_ERROR: 500
 }
 
+const USER_STATUS = {
+    ACTIVO:     'ACTIVO',
+    PENDIENTE:  'PENDIENTE',
+    SUSPENDIDO: 'SUSPENDIDO',
+    ELIMINADO:  'ELIMINADO'
+}
+
 module.exports = {
-    HTTP_STATUS
+    HTTP_STATUS,
+    USER_STATUS
 }

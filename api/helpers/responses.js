@@ -54,6 +54,14 @@ const dataNotFound = (res, object) =>{
     });
 }
 
+const dataNotAllowed = (res, field) =>{
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        status:  HTTP_STATUS.OK,
+        message: `Debes ingresar un dato válido para el campo: ${field}.`,
+        data: null
+    });
+}
+
 module.exports = {
     invalidLoginCredentialsError,
     recordCreationError,
@@ -61,5 +69,6 @@ module.exports = {
     badRequestError,
     invalidTokenError,
     transactionExecutedSuccessfully,
-    dataNotFound
+    dataNotFound,
+    dataNotAllowed
 }
