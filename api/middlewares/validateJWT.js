@@ -19,8 +19,8 @@ const validateJWT = async ( req, res = response, next ) => {
         const data = await verifyJWT(token);
         if(data != null){
             // Envio datos por la request al controlador
-            req.uid = data.uid;
-            req.usuario = data.name;
+            req.session_userId = data.user_id;
+            req.session_username = data.user_name;
         }else{
             return invalidTokenError(res, 'No se pudo resolver el token enviado');
         }

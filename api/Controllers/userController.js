@@ -1,5 +1,5 @@
 const { Usuarios, sequelize } = require('../../models/index');
-const { transactionExecutedSuccessfully, recordCreationError, internalServerError, badRequestError, dataNotFound, dataNotAllowed } = require('../helpers/responses');
+const { transactionExecutedSuccessfully, recordCreationError, internalServerError, dataAlreadyExists, dataNotFound, dataNotAllowed, actionNotAllowed } = require('../helpers/responses');
 const userService = require('../Services/user.service');
 const { generateJWT } = require('../helpers/jwt');
 const { encryptData } = require('../Utils/encryption');
@@ -28,22 +28,31 @@ module.exports = {
     async createUser(req, res){
 
         try {
-            await sequelize.transaction( async (t) =>{
-                // NOTE: Username validation missing
-
-                req.body.password = await encryptData(req.body.password);
-                const newUser = await userService.create(req.body, t);
-                if(newUser){
-                    const token = await generateJWT(newUser.id, newUser.usuario);
-                    let data = {
-                        usuario: newUser,
-                        token
-                    };
-                    return transactionExecutedSuccessfully(res, data);
-                }else{
-                    return recordCreationError(res, 'Usuario')
-                }
-            });         
+            // Check session user profile
+            if(await userService.isAdmin(req.session_userId)){
+                await sequelize.transaction( async (t) =>{
+                    // NOTE: Username validation missing
+                    const { username } = req.body;
+                    if(await userService.getByName(username) == null) {
+                        req.body.password = await encryptData(req.body.password);
+                        const newUser = await userService.create(req.body, t);
+                        if(newUser){
+                            const token = await generateJWT(newUser.id, newUser.usuario);
+                            let data = {
+                                usuario: newUser,
+                                token
+                            };
+                            return transactionExecutedSuccessfully(res, data);
+                        }else{
+                            return recordCreationError(res, 'Usuario')
+                        }
+                    } else {
+                        return dataAlreadyExists(res, 'Usuario', 'Username', username);
+                    }
+                });  
+            } else {
+                return await actionNotAllowed(res, null);
+            }       
         } catch (error) {
             console.log(error);
             return internalServerError(res, error);
@@ -86,13 +95,20 @@ module.exports = {
 
     async deleteUser(req, res) {
         try {
-            await sequelize.transaction(async (t) => {
-                if(await userService.delete(req.params.user_id, t)) {
-                    return transactionExecutedSuccessfully(res, null);
-                } else {
-                    return dataNotFound(res, 'Usuario');
-                }
-            });
+            // Check session user profile
+            if(await userService.isAdmin(req.session_userId)){
+
+                const { user_id } = req.params;
+                await sequelize.transaction(async (t) => {
+                    if(await userService.delete(user_id, t)) {
+                        return transactionExecutedSuccessfully(res, null);
+                    } else {
+                        return dataNotFound(res, 'Usuario');
+                    }
+                });
+            } else {
+                return await actionNotAllowed(res, null);
+            }
         } catch (error) {
             console.log(error);
             return internalServerError(res, error);
