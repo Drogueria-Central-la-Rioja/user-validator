@@ -47,10 +47,34 @@ const transactionExecutedSuccessfully = (res, data) =>{
 }
 
 const dataNotFound = (res, object) =>{
-    return res.status(HTTP_STATUS.OK).json({
-        status:  HTTP_STATUS.OK,
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        status:  HTTP_STATUS.BAD_REQUEST,
         message: `${object} no encontrado/a.`,
         data: null
+    });
+}
+
+const dataNotAllowed = (res, field) =>{
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        status:  HTTP_STATUS.BAD_REQUEST,
+        message: `Debes ingresar un dato válido para el campo: ${field}.`,
+        data: null
+    });
+}
+
+const dataAlreadyExists = (res, entity, field, value) =>{
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        status:  HTTP_STATUS.BAD_REQUEST,
+        message: `Ya existe un/a ${entity} registrado con: ${field} = ${value}.`,
+        data: null
+    });
+}
+
+const actionNotAllowed = (res, extra) =>{
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        status:  HTTP_STATUS.INTERNAL_SERVER_ERROR,
+        message: `Acción no permitida para el usuario.`,
+        data: extra
     });
 }
 
@@ -61,5 +85,8 @@ module.exports = {
     badRequestError,
     invalidTokenError,
     transactionExecutedSuccessfully,
-    dataNotFound
+    dataNotFound,
+    dataNotAllowed,
+    dataAlreadyExists,
+    actionNotAllowed
 }

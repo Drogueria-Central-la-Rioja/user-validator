@@ -1,4 +1,5 @@
-const { Usuarios, Personas } = require('../../models/index');
+const { Usuarios, Personas, Perfiles_Usuarios } = require('../../models/index');
+const { USER_STATUS } = require('../Utils/commons');
 
 module.exports = {
 
@@ -6,7 +7,7 @@ module.exports = {
 
         const dataPersonal = data.datosPersonales;
         const newUser = await Usuarios.create({
-            usuario:        data.usuario,
+            username:       data.username,
             password:       data.password,
             dependencia_id: data.dependencia_id,
             estado:         'Activo', // Change for Constant(ENUM)
@@ -86,7 +87,6 @@ module.exports = {
             where: { username },
             attributes: ['id','username', 'password', 'persona_id', 'estado', 'lastLogin'],
         });
-
         if(user){
             return user.dataValues;
         }else{
@@ -95,11 +95,46 @@ module.exports = {
     },
 
     async delete(user_id, t) {
+        return await this.changeStatus(user_id, 'Eliminado', t);
+    },
+
+    async changeStatus(user_id, status, t) {
         let user = await Usuarios.findByPk(user_id);
         if(user) {
-            await user.update({ estado: 'Eliminado' }, { transaction: t });
+            await user.update({ estado: status }, { transaction: t });
             return true;
         }
         return false;
+    },
+
+    async isAllowedStatus(status) {
+        const _allowed = Object.values(USER_STATUS);
+        if(!_allowed.includes(status.toUpperCase())){
+            return false;
+        }
+        return true;
+    },
+
+    async getProfiles(user_id) {
+        const perfiles = await Perfiles_Usuarios.findAll({
+            where: { usuario_id: user_id },
+            attributes: ['id', 'estado'],
+            include: {
+                association: 'perfilAsignado',
+                attributes: ['id','nombre']
+            }
+        });
+        return perfiles;
+    },
+
+    async isAdmin(user_id) {
+        let isAdmin = false;
+        const perfiles = await this.getProfiles(user_id);
+        perfiles.forEach(e => {
+            if(e.perfilAsignado.nombre.toUpperCase() == 'ADMINISTRADOR') {
+                isAdmin = true;
+            }
+        });
+        return isAdmin;
     }
 };

@@ -4,7 +4,8 @@ const {
 const {
  invalidLoginCredentialsError,
  internalServerError,
- transactionExecutedSuccessfully
+ transactionExecutedSuccessfully,
+ invalidTokenError
 } = require('../helpers/responses');
 const authService = require('../Services/auth.service');
 const userService = require('../Services/user.service');
@@ -37,8 +38,11 @@ module.exports = {
     async logout(req, res) {
         try {
             const { token } = req.body;
-            await authService.addTokenToBlacklist(token);   
-            return transactionExecutedSuccessfully(res);
+            if(await authService.addTokenToBlacklist(token)) {
+                return transactionExecutedSuccessfully(res);
+            } else {
+                return invalidTokenError(res, 'No se pudo validar el token enviado');
+            }
         } catch (error) {
             console.log(error);
             return internalServerError(res, error);

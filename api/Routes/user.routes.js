@@ -65,11 +65,18 @@ const userController = require('../Controllers/userController');
  *                  type: string
  *                  description: Estado de la cuenta
  *              datosPersonales:
-*                   $ref: '#/components/schemas/DatosPersonales'
+ *                   $ref: '#/components/schemas/DatosPersonales'
  *          required:
  *              - dependencia_id
  *              - estado
  *              - datosPersonales
+ *      ChangeStatusUser:
+ *          type: object
+ *          properties:
+ *              nuevo_estado:
+ *                  type: string
+ *          required:
+ *              - nuevo_estado
  */
 
 /**
@@ -145,6 +152,11 @@ router.post('/', validateJWT, userController.createUser);
  *            schema:
  *              type: string
  *            required: true
+ *          - in: path
+ *            name: user_id
+ *            schema:
+ *              type: integer
+ *            required: true
  *      requestBody:
  *          required: true
  *          content:
@@ -159,6 +171,38 @@ router.post('/', validateJWT, userController.createUser);
  *              description: Hubo un error interno.
  */
 router.patch('/:user_id', validateJWT, userController.updateUserData);
+
+/**
+ * @swagger
+ * /users/{user_id}/change-status:
+ *  patch:
+ *      summary: Cambiar estado de un usuario
+ *      tags: [User]
+ *      parameters:
+ *          - in: header
+ *            name: x-token
+ *            schema:
+ *              type: string
+ *            required: true
+ *          - in: path
+ *            name: user_id
+ *            schema:
+ *              type: integer
+ *            required: true
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/ChangeStatusUser'
+ *      responses:
+ *          200:
+ *              description: Cambio de estado exitoso.
+ *          500:
+ *              description: Hubo un error interno.
+ */
+ router.patch('/:user_id/change-status', validateJWT, userController.changeStatusUser);
 
 /**
  * @swagger
