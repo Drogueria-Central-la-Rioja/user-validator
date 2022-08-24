@@ -7,16 +7,22 @@ module.exports = {
 
     async addTokenToBlacklist(token) {
         try {
-            const dataToken = verifyJWT(token);
-            let expireIn = new Date((await dataToken).exp * 1000);
-            await sequelize.transaction( async (t) => {
-                await Tokens_blacklist.create({
-                    token,
-                    expireIn
-                }, {transaction: t});
-            });   
+            const dataToken = await verifyJWT(token);
+            if(dataToken != null) {
+                let expireIn = new Date((await dataToken).exp * 1000);
+                await sequelize.transaction( async (t) => {
+                    await Tokens_blacklist.create({
+                        token,
+                        expireIn
+                    }, {transaction: t});
+                }); 
+                return true;
+            } else {
+                return false;
+            } 
         } catch (error) {
             console.log(error);
+            return false;
         }
     },
 

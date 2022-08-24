@@ -24,6 +24,7 @@ module.exports = {
             data = jwt.verify(token, process.env.SECRET_JWT_SEED);
         } catch (error) {
             console.log(error);
+            data = null;
         }
         return data;
     }
