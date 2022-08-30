@@ -3,8 +3,10 @@ const config = require('../config/config');
 const { sequelize } = require('../models/index');
 const path = require('path');
 
+const profileRoutes = require("./Routes/profile.routes");
 const userRoutes = require("./Routes/user.routes");
 const publicRoutes = require("./Routes/public.routes");
+
 const { executeCrons } = require("./Services/cron.service");
 
 // Swagger
@@ -38,6 +40,7 @@ app.use(express.urlencoded({extended:true}));
 // Load routes
 app.use('/public', publicRoutes);
 app.use('/users', userRoutes);
+app.use('/profiles', profileRoutes);
 
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(swaggerSpect)));
 

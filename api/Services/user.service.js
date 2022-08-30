@@ -94,14 +94,14 @@ module.exports = {
         }
     },
 
-    async delete(user_id, t) {
-        return await this.changeStatus(user_id, 'Eliminado', t);
+    async delete(user_id, transaction) {
+        return await this.changeStatus(user_id, 'Eliminado', transaction);
     },
 
-    async changeStatus(user_id, status, t) {
+    async changeStatus(user_id, status, transaction) {
         let user = await Usuarios.findByPk(user_id);
         if(user) {
-            await user.update({ estado: status }, { transaction: t });
+            await user.update({ estado: status }, { transaction });
             return true;
         }
         return false;
