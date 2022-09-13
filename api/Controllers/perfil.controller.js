@@ -1,4 +1,4 @@
-const { transactionExecutedSuccessfully, actionNotAllowed, internalServerError } = require("../helpers/responses");
+const { transactionExecutedSuccessfully, actionNotAllowed, internalServerError, badRequestError, recordCreationError } = require("../helpers/responses");
 const { sequelize } = require('../../models/index');
 const perfilService = require("../Services/perfil.service");
 const userService = require("../Services/user.service");
@@ -30,7 +30,12 @@ module.exports = {
 
     async addUserProfile(req, res) {
         try {
-            await perfilService.bindUser(req.body);
+            if(! await perfilService.assignedProfile(req.body.usuario_id, req.body.perfil_id)) {
+                const bind = await perfilService.bindUser(req.body);
+                return transactionExecutedSuccessfully(res, bind);
+            } else {
+                return recordCreationError(res, 'Perfil de usuario. Ya se encuentra asignado el mismo para este usuario');
+            }
         } catch (error) {
             console.log(error);
             return internalServerError(res, error);

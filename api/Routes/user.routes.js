@@ -54,6 +54,25 @@ const userController = require('../Controllers/user.controller');
  *              username: juanperez
  *              password: 123
  *              dependencia_id: 1
+ *      NewUser:
+ *          type: object
+ *          properties:
+ *              username:
+ *                  type: string
+ *                  description: Nombre del usuario
+ *              password:
+ *                  type: string
+ *                  description: Contraseña del usuario
+ *              dependencia_id:
+ *                  type: integer
+ *                  description: ID de Dependencia del usuario
+ *              datosPersonales:
+ *                   $ref: '#/components/schemas/DatosPersonales'
+ *          required:
+ *              - username
+ *              - password
+ *              - dependencia_id
+ *              - dni
  *      UpdateUser:
  *          type: object
  *          properties:
@@ -130,7 +149,7 @@ router.get('/:user_id', userController.getUserInfo);
  *              application/json:
  *                  schema:
  *                      type: object
- *                      $ref: '#/components/schemas/User'
+ *                      $ref: '#/components/schemas/NewUser'
  *      responses:
  *          200:
  *              description: Nuevo usuario creado.

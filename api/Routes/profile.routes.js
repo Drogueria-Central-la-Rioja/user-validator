@@ -32,7 +32,7 @@ const { validateJWT } = require("../middlewares/validateJWT");
  
 /**
  * @swagger
- * /create:
+ * /profiles/create:
  *  post:
  *      summary: Crear un nuevo perfil
  *      tags: [Profiles]
@@ -59,7 +59,7 @@ const { validateJWT } = require("../middlewares/validateJWT");
 
 /**
  * @swagger
- * /bind-user:
+ * /profiles/bind-user:
  *  post:
  *      summary: Agregar un perfil a un usuario
  *      tags: [Profiles]

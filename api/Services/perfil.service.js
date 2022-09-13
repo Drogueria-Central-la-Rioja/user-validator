@@ -11,10 +11,21 @@ module.exports = {
     },
 
     async bindUser(data) {
-        return await Perfiles_Usuarios.create({
-            usuario_id: data.user_id,
+        return Perfiles_Usuarios.create({
+            usuario_id: data.usuario_id,
             perfil_id:  data.perfil_id,
             estado:     'Activo'
-        })
+        });
+    },
+
+    async assignedProfile(user_id, profile_id) {
+        let exist = false;
+        let profile = await Perfiles_Usuarios.findOne({
+            where: { usuario_id: user_id, perfil_id: profile_id }
+        });
+        if(profile){
+            exist = true;
+        }
+        return exist;
     }
 }
