@@ -26,6 +26,7 @@ module.exports = {
         if(profile){
             exist = true;
         }
+        // remove this comment
         return exist;
     }
 }
