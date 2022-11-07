@@ -25,7 +25,7 @@ const swaggerSpect = {
             }
         ]
     },
-    apis: [`${path.join(__dirname, './routes/*.js')}`],
+    apis: [`${path.join(__dirname, 'Routes/*.js')}`],
 };
 
 const app = express();

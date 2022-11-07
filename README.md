@@ -47,3 +47,6 @@ mysql> GRANT ALL PRIVILEGES ON *.* TO 'dev_user'@'%';
 
 # Run server
 npm run start
+
+# Create models and migration with sequelize
+--> npx sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string
