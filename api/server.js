@@ -6,6 +6,8 @@ const path = require('path');
 const profileRoutes = require("./Routes/profile.routes");
 const userRoutes = require("./Routes/user.routes");
 const publicRoutes = require("./Routes/public.routes");
+const provinceRoutes = require("./Routes/province.routes");
+const districtRoutes = require("./Routes/district.routes");
 
 const { executeCrons } = require("./Services/cron.service");
 
@@ -41,6 +43,8 @@ app.use(express.urlencoded({extended:true}));
 app.use('/public', publicRoutes);
 app.use('/users', userRoutes);
 app.use('/profiles', profileRoutes);
+app.use('/provinces', provinceRoutes);
+app.use('/districts', districtRoutes);
 
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(swaggerSpect)));
 

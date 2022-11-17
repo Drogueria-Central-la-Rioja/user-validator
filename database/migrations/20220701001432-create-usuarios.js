@@ -17,10 +17,11 @@ module.exports = {
         type: Sequelize.STRING
       },
       persona_id: {
-        allowNull: true,
+        allowNull: false,
         type: Sequelize.INTEGER
       },
       dependencia_id: {
+        allowNull: false,
         type: Sequelize.INTEGER
       },
       estado: {

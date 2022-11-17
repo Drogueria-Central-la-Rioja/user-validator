@@ -10,7 +10,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Dependencias.hasOne(models.Domicilios, { as: 'domicilioDependencia', foreignKey: 'domicilio_id' });
+      Dependencias.hasOne(models.Niveles_atencion, { as: 'nivelAtencion', foreignKey: 'nivel_atencion_id' });
     }
   }
   Dependencias.init({
