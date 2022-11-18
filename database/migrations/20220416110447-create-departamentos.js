@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('niveles_atencions', {
+    await queryInterface.createTable('departamentos', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -14,17 +14,18 @@ module.exports = {
       descripcion: {
         type: Sequelize.STRING
       },
-      createdAt: {
+      provincia_id: {
         allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.INTEGER,
+        onDelete: 'NO ACTION',
+        references: {
+          model: 'provincias',
+          key: 'id'
+        }
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('niveles_atencions');
+    await queryInterface.dropTable('departamentos');
   }
 };

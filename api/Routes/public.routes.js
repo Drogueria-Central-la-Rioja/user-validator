@@ -11,10 +11,8 @@ const authController = require('../Controllers/auth.controller');
  *          properties:
  *              username:
  *                  type: string
- *                  description: Nombre del usuario
  *              password:
  *                  type: string
- *                  description: Contraseña del usuario
  *          required:
  *              - username
  *              - password
@@ -26,7 +24,7 @@ const authController = require('../Controllers/auth.controller');
  *          properties:
  *              token:
  *                  type: string
- *                  description: Token generado al iniciar sesión
+ *                  description: token generated at login
  *          required:
  *              - token
  *          example:
@@ -37,7 +35,7 @@ const authController = require('../Controllers/auth.controller');
  * @swagger
  * /public/login:
  *  post:
- *      summary: Iniciar sesión
+ *      summary: login
  *      tags: [Public]
  *      requestBody:
  *          required: true
@@ -48,9 +46,9 @@ const authController = require('../Controllers/auth.controller');
  *                      $ref: '#/components/schemas/Login'
  *      responses:
  *          200:
- *              description: Login exitoso!
+ *              description: Login successfull
  *          500:
- *              description: Hubo un error interno.
+ *              description: internal server error.
  */
 router.post('/login', authController.login);
 
@@ -58,7 +56,7 @@ router.post('/login', authController.login);
  * @swagger
  * /public/logout:
  *  post:
- *      summary: Cerrar sesión
+ *      summary: logout
  *      tags: [Public]
  *      requestBody:
  *          required: true
@@ -69,9 +67,9 @@ router.post('/login', authController.login);
  *                      $ref: '#/components/schemas/Logout'
  *      responses:
  *          200:
- *              description: Sesión terminada.
+ *              description: session ended.
  *          500:
- *              description: Hubo un error interno.
+ *              description: internal server error.
  */
 router.post('/logout', authController.logout);
 

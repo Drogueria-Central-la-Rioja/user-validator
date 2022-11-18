@@ -15,7 +15,7 @@ const { validateJWT } = require("../middlewares/validateJWT");
  *                  type: integer
  *              estado:
  *                  type: string
- *                  description: Estado del perfil asignado. Por defecto activo
+ *                  description: by default active
  *          required:
  *              - usuario_id
  *              - perfil_id
@@ -34,8 +34,8 @@ const { validateJWT } = require("../middlewares/validateJWT");
  * @swagger
  * /profiles/create:
  *  post:
- *      summary: Crear un nuevo perfil
- *      tags: [Profiles]
+ *      summary: create new profile
+ *      tags: [Profile]
  *      parameters:
  *          - in: header
  *            name: x-token
@@ -51,9 +51,9 @@ const { validateJWT } = require("../middlewares/validateJWT");
  *                      $ref: '#/components/schemas/CreateProfile'
  *      responses:
  *          200:
- *              description: Creado correctamente.
+ *              description: transaction executed successfully.
  *          500:
- *              description: Hubo un error interno.
+ *              description: internal server error.
  */
  router.post('/create', validateJWT, perfilController.createProfile);
 
@@ -61,8 +61,8 @@ const { validateJWT } = require("../middlewares/validateJWT");
  * @swagger
  * /profiles/bind-user:
  *  post:
- *      summary: Agregar un perfil a un usuario
- *      tags: [Profiles]
+ *      summary: add a profile to a user
+ *      tags: [Profile]
  *      parameters:
  *          - in: header
  *            name: x-token
@@ -78,9 +78,9 @@ const { validateJWT } = require("../middlewares/validateJWT");
  *                      $ref: '#/components/schemas/UserProfile'
  *      responses:
  *          200:
- *              description: Perfil asignado.
+ *              description: assigned profile.
  *          500:
- *              description: Hubo un error interno.
+ *              description: internal server error.
  */
  router.post('/bind-user', validateJWT, perfilController.addUserProfile);
 

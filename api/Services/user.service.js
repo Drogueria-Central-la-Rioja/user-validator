@@ -69,15 +69,24 @@ module.exports = {
 
     async getAll() {
         return await Usuarios.findAll({
-            attributes: ['username', 'persona_id', 'estado'],
-            include: {
-                association: 'perfilesUsuario',
-                attributes: ['estado'],
-                include: [{
-                    association: 'perfilAsignado',
-                    attributes: ['id','nombre']
-                }]
-            }
+            attributes: { exclude: ['password', 'persona_id'] },
+            include: [
+                {
+                    association: 'datosPersonales',
+                    include: {
+                        attributes: { exclude: ['domicilio_id'] },
+                        association: 'domicilioPersona'
+                    }
+                },
+                {
+                    association: 'perfilesUsuario',
+                    attributes: ['estado'],
+                    include: {
+                        association: 'perfilAsignado',
+                        attributes: ['id','nombre']
+                    }
+                }
+            ]
         });
     },
 
@@ -86,11 +95,7 @@ module.exports = {
             where: { username },
             attributes: ['id','username', 'password', 'persona_id', 'estado', 'lastLogin'],
         });
-        if(user){
-            return user.dataValues;
-        }else{
-            return null;
-        }
+        return user ? user.dataValues : null;
     },
 
     async delete(user_id, transaction) {

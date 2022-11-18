@@ -1,34 +1,34 @@
 const router = require('express').Router();
-const districtController = require('../Controllers/district.controller');
+const locationController = require('../Controllers/location.controller');
 const { validateJWT } = require("../middlewares/validateJWT");
 
 /**
  * @swagger
  * components:
  *  schemas:
- *      CreateDistrict:
+ *      CreateLocation:
  *          type: object
  *          properties:
- *              provincia_id:
+ *              departamento_id:
  *                  type: integer
  *              nombre:
  *                  type: string
  *              descripcion:
  *                  type: string
  *          required:
- *              - provincia_id
+ *              - departamento_id
  *              - nombre
  */
 
 /**
  * @swagger
- * /districts/{province_id}:
+ * /locations/{district_id}:
  *  get:
- *      summary: get list of district by province
+ *      summary: get list of locations by district
  *      tags: [Residence]
  *      parameters:
  *          - in: path
- *            name: province_id
+ *            name: district_id
  *            schema:
  *              type: integer
  *            required: true
@@ -38,13 +38,13 @@ const { validateJWT } = require("../middlewares/validateJWT");
  *          500:
  *              description: internal server error.
  */
- router.get('/:province_id', districtController.getDistrictsByProvinceId);
+ router.get('/:district_id', locationController.getLocationsByDistrictId);
 
- /**
+  /**
  * @swagger
- * /districts/create:
+ * /locations/create:
  *  post:
- *      summary: create a new district
+ *      summary: create new location
  *      tags: [Residence]
  *      parameters:
  *          - in: header
@@ -58,13 +58,13 @@ const { validateJWT } = require("../middlewares/validateJWT");
  *              application/json:
  *                  schema:
  *                      type: object
- *                      $ref: '#/components/schemas/CreateDistrict'
+ *                      $ref: '#/components/schemas/CreateLocation'
  *      responses:
  *          200:
  *              description: transaction executed successfully.
  *          500:
  *              description: internal server error.
  */
-  router.post('/create', validateJWT, districtController.createDistrict);
+   router.post('/create', validateJWT, locationController.createLocation);
 
  module.exports = router;

@@ -1,4 +1,10 @@
-const { transactionExecutedSuccessfully, actionNotAllowed, internalServerError, badRequestError, recordCreationError } = require("../helpers/responses");
+const { 
+    transactionExecutedSuccessfully,
+    actionNotAllowed,
+    internalServerError,
+    badRequestError,
+    recordCreationError
+} = require("../helpers/responses");
 const { sequelize } = require('../../models/index');
 const perfilService = require("../Services/perfil.service");
 const userService = require("../Services/user.service");
@@ -16,7 +22,7 @@ module.exports = {
             }
         } catch (error) {
             console.log(error);
-            return internalServerError(res, error);
+            return internalServerError(res, error.message);
         }
     },
 
@@ -38,7 +44,7 @@ module.exports = {
             }
         } catch (error) {
             console.log(error);
-            return internalServerError(res, error);
+            return internalServerError(res, error.message);
         }
     }
 }

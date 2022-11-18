@@ -1,10 +1,13 @@
 'use strict';
 
-module.exports = {
-  up: async (queryInterface, Sequelize) => {
+const { Domicilios } = require('../../models/index');
 
+module.exports = {
+  async up (queryInterface, Sequelize) {
+    const domicilio = await Domicilios.findOne({where: { descripcion: 'Casa paterna'}});
+    console.log('PASO AQUI')
       await queryInterface.bulkInsert('personas', [
-        {nombres: "Juan Carlos", apellidos: "Perez", dni: 324324345, email: "juancito@gmial.com", telefono: "3804-392932", domicilio_completo: "La Rioja - Argentina", createdAt: new Date(), updatedAt: new Date()}
+        {nombres: "Juan Carlos", apellidos: "Perez", dni: 324324345, email: "juancito@gmial.com", telefono: "3804-392932", domicilio_id: domicilio.id, createdAt: new Date(), updatedAt: new Date()}
       ], {});
   },
 

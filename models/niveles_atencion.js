@@ -19,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Niveles_atencion',
-    tableName: 'niveles_atencion'
+    tableName: 'niveles_atencion',
+    timestamps: false
   });
   return Niveles_atencion;
 };

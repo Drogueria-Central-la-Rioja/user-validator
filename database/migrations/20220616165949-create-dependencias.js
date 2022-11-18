@@ -33,10 +33,22 @@ module.exports = {
         type: Sequelize.STRING
       },
       domicilio_id: {
-        type: Sequelize.INTEGER
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'domicilios',
+          key: 'id'
+        }
       },
       nivel_atencion_id: {
-        type: Sequelize.INTEGER
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        onDelete: 'NO ACTION',
+        references: {
+          model: 'niveles_atencion',
+          key: 'id'
+        }
       },
       tipologia: {
         type: Sequelize.STRING

@@ -3,7 +3,12 @@ const provinceService = require("../Services/province.service");
 
 module.exports = {
     async getProvinces(req, res) {
-        const provinces = await provinceService.getAll();
-        return transactionExecutedSuccessfully(res, provinces);
+        try {
+            const provinces = await provinceService.getAll();
+            return transactionExecutedSuccessfully(res, provinces);
+        } catch (error) {
+            console.log(error);
+            return internalServerError(res, error.message);
+        }
     }
 }

@@ -8,6 +8,9 @@ const userRoutes = require("./Routes/user.routes");
 const publicRoutes = require("./Routes/public.routes");
 const provinceRoutes = require("./Routes/province.routes");
 const districtRoutes = require("./Routes/district.routes");
+const locationRoutes = require("./Routes/location.routes");
+const residenceRoutes = require("./Routes/residence.routes");
+const dependenceRoutes = require("./Routes/dependence.routes");
 
 const { executeCrons } = require("./Services/cron.service");
 
@@ -45,6 +48,9 @@ app.use('/users', userRoutes);
 app.use('/profiles', profileRoutes);
 app.use('/provinces', provinceRoutes);
 app.use('/districts', districtRoutes);
+app.use('/locations', locationRoutes);
+app.use('/residences', residenceRoutes);
+app.use('/dependencies', dependenceRoutes);
 
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(swaggerSpect)));
 

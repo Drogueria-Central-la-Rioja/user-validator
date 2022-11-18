@@ -16,7 +16,12 @@ module.exports = {
       },
       departamento_id: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        onDelete: 'NO ACTION',
+        references: {
+          model: 'departamentos',
+          key: 'id'
+        }
       }
     });
   },

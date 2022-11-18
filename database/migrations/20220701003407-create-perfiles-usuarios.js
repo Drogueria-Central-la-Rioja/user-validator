@@ -10,11 +10,21 @@ module.exports = {
       },
       usuario_id: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        onDelete: 'NO ACTION',
+        references: {
+          model: 'usuarios',
+          key: 'id'
+        }
       },
       perfil_id: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        onDelete: 'NO ACTION',
+        references: {
+          model: 'perfiles',
+          key: 'id'
+        }
       },
       estado: {
         type: Sequelize.STRING

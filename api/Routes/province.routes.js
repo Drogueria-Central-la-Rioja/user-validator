@@ -5,13 +5,13 @@ const provinceController = require('../Controllers/province.controller');
  * @swagger
  * /provinces:
  *  get:
- *      summary: Obtener lista de provincias
- *      tags: [Province]
+ *      summary: list of provinces
+ *      tags: [Residence]
  *      responses:
  *          200:
- *              description: Lista de provincias.
+ *              description: transaction executed successfully.
  *          500:
- *              description: hubo un error interno.
+ *              description: internal server error.
  */
  router.get('/', provinceController.getProvinces);
 

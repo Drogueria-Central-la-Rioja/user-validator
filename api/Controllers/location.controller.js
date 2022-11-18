@@ -1,32 +1,36 @@
 const { sequelize } = require('../../models/index');
 const { transactionExecutedSuccessfully, dataNotFound, internalServerError, actionNotAllowed } = require("../helpers/responses");
+const locationService = require('../Services/location.service');
 const districtService = require("../Services/district.service");
 const userService = require('../Services/user.service');
-const provinceService = require('../Services/province.service');
 
 module.exports = {
-    async getDistrictsByProvinceId(req, res) {
+    async getLocationsByDistrictId(req, res) {
         try {
-            const { province_id } = req.params;
-            const districts = await districtService.getByProvinceId(province_id);
-            return transactionExecutedSuccessfully(res, districts);
+            const { district_id } = req.params;
+            const district = await districtService.getById(district_id);
+            if(!district) {
+                return dataNotFound(res, 'Departamento');
+            }
+            const locations = await locationService.getByDistrictId(district_id);
+            return transactionExecutedSuccessfully(res, locations);
         } catch (error) {
             console.log(error);
-            return internalServerError(res, error.message);
+            return internalServerError(res, error.message);  
         }
     },
 
-    async createDistrict(req, res) {
+    async createLocation(req, res) {
         try {
             const { body } = req;
-            const province = await provinceService.getById(body.provincia_id);
-            if(!province){
-                return dataNotFound(res, 'Provincia');
+            const district = await districtService.getById(body.departamento_id);
+            if(!district){
+                return dataNotFound(res, 'Departamento');
             }
 
             if(await userService.isAdmin(req.session_userId)){ 
                 const created = await sequelize.transaction(async (t) => {
-                    return await districtService.create(body);
+                    return await locationService.create(body);
                 });
                 return transactionExecutedSuccessfully(res, created);  
             } else {

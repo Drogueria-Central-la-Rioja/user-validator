@@ -1,6 +1,10 @@
 const { Departamentos } = require('../../models/index');
 
 module.exports = {
+    async getById(id) {
+        return await Departamentos.findByPk(id);
+    },
+
     async getByProvinceId(provincia_id) {
         return await Departamentos.findAll({
             where: { provincia_id },
