@@ -7,6 +7,19 @@ const userController = require('../Controllers/user.controller');
  * @swagger
  * components:
  *  schemas:
+ *      DomicilioPersona:
+ *          type: object
+ *          properties:
+ *              descripcion:
+ *                  type: string
+ *              direccion_completa:
+ *                  type: string
+ *              localidad_id:
+ *                  type: integer
+ *          required:
+ *              - descripcion
+ *              - direccion_completa
+ *              - localidad_id
  *      DatosPersonales:
  *          type: object
  *          properties:
@@ -20,18 +33,13 @@ const userController = require('../Controllers/user.controller');
  *                  type: string
  *              telefono:
  *                  type: string
- *              domicilio_completo:
- *                  type: string
+ *              domicilioPersona:
+ *                   $ref: '#/components/schemas/DomicilioPersona'
  *          required:
  *              - nombres
  *              - apellidos
  *              - dni
  *              - email
- *          example:
- *              nombres: Juan
- *              apellidos: Perez
- *              dni: 39992342
- *              email: juancito@gmail.com
  *      User:
  *          type: object
  *          properties:
@@ -45,10 +53,6 @@ const userController = require('../Controllers/user.controller');
  *              - username
  *              - password
  *              - dependencia_id
- *          example:
- *              username: juanperez
- *              password: 123
- *              dependencia_id: 1
  *      NewUser:
  *          type: object
  *          properties:

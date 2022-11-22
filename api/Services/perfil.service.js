@@ -1,19 +1,24 @@
 const { Perfiles, Perfiles_Usuarios } = require('../../models/index');
 
 module.exports = {
+
+    async getAll() {
+        return await Perfiles.findAll();
+    },
+
     async create(data, transaction) {
         const profile = await Perfiles.create(data, { transaction });
         return profile.dataValues;
     },
 
     async getOne(perfil_id) {
-        return await Perfiles.getOne(perfil_id);
+        return await Perfiles.findByPk(perfil_id);
     },
 
-    async bindUser(data) {
+    async bindUser(usuario_id, perfil_id) {
         return Perfiles_Usuarios.create({
-            usuario_id: data.usuario_id,
-            perfil_id:  data.perfil_id,
+            usuario_id,
+            perfil_id,
             estado:     'Activo'
         });
     },

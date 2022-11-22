@@ -16,9 +16,6 @@ const authController = require('../Controllers/auth.controller');
  *          required:
  *              - username
  *              - password
- *          example:
- *              username: juanperez
- *              password: '123'
  *      Logout:
  *          type: object
  *          properties:

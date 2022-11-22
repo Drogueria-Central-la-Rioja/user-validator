@@ -1,34 +1,33 @@
-const { Usuarios, Personas, Perfiles_Usuarios } = require('../../models/index');
+const { 
+ Usuarios,
+ Personas,
+ Perfiles_Usuarios,
+ Domicilios } = require('../../models/index');
 const { USER_STATUS } = require('../Utils/commons');
 
 module.exports = {
 
     async create(data, transaction) {
 
-        const dataPersonal = data.datosPersonales;
+        const { datosPersonales } = data;
+        const newPerson = await Personas.create(datosPersonales, {
+            include: 'domicilioPersona',
+            transaction
+        });
+
         const newUser = await Usuarios.create({
             username:       data.username,
             password:       data.password,
+            persona_id:     newPerson.id,
             dependencia_id: data.dependencia_id,
             estado:         'Activo', // Change for Constant(ENUM)
-            datosPersonales: {
-                nombres:            dataPersonal.nombres,
-                apellidos:          dataPersonal.apellidos,
-                dni:                dataPersonal.dni,
-                email:              dataPersonal.email,
-                telefono:           dataPersonal.telefono,
-                domicilio_completo: dataPersonal.domicilio_completo
-            }
         },{
-            include: 'datosPersonales',
-        //    attributes: { exclude: ['password','updatedAt'] },
             transaction
         });
 
         if(newUser.dataValues) {
             delete newUser.dataValues.password;
             delete newUser.dataValues.updatedAt;
-            delete newUser.dataValues.datosPersonales.dataValues.id;
             return newUser;
         } else {
             return null;
@@ -36,58 +35,33 @@ module.exports = {
         
     },
 
-    async updateData(user_id, data, transaction) {
+    async updateData(user, data, transaction) {
 
-        let user = await Usuarios.findByPk(user_id);
-        let person = await Personas.findByPk(user.dataValues.persona_id);
+        const { datosPersonales } = data;
+        if(datosPersonales) {
+            let person = await Personas.findByPk(user.dataValues.persona_id);
+            await person.update(datosPersonales, {
+                transaction 
+            });
+            if(datosPersonales.domicilioPersona) {
+                let domicilio = await Domicilios.findByPk(person.domicilio_id);
+                await domicilio.update(datosPersonales.domicilioPersona, {
+                    transaction 
+                });
+            }
+        }
 
-        await person.update(data.datosPersonales, { transaction });
         delete data.datosPersonales;
         await user.update(data, { transaction });
-        return true;
+        return user;
     },
 
     async getOne(user_id) {
-        return await Usuarios.findByPk(user_id, {
-            attributes: ['username', 'persona_id', 'estado'],
-            include: [
-                {
-                    association: 'datosPersonales',
-                    attributes: ['nombres','apellidos','dni','telefono','email','domicilio_completo']
-                },
-                {
-                    association: 'perfilesUsuario',
-                    attributes: ['estado'],
-                    include: [{
-                        association: 'perfilAsignado',
-                        attributes: ['id','nombre']
-                    }]
-                }
-            ]
-        });
+        return await Usuarios.findByPk(user_id, fullInfoUser);
     },
 
     async getAll() {
-        return await Usuarios.findAll({
-            attributes: { exclude: ['password', 'persona_id'] },
-            include: [
-                {
-                    association: 'datosPersonales',
-                    include: {
-                        attributes: { exclude: ['domicilio_id'] },
-                        association: 'domicilioPersona'
-                    }
-                },
-                {
-                    association: 'perfilesUsuario',
-                    attributes: ['estado'],
-                    include: {
-                        association: 'perfilAsignado',
-                        attributes: ['id','nombre']
-                    }
-                }
-            ]
-        });
+        return await Usuarios.findAll(fullInfoUser);
     },
 
     async getByName(username) {
@@ -142,3 +116,24 @@ module.exports = {
         return isAdmin;
     }
 };
+
+const fullInfoUser = {
+    attributes: { exclude: ['password', 'persona_id'] },
+    include: [
+        {
+            association: 'datosPersonales',
+            include: {
+                attributes: { exclude: ['domicilio_id'] },
+                association: 'domicilioPersona'
+            }
+        },
+        {
+            association: 'perfilesUsuario',
+            attributes: ['estado'],
+            include: {
+                association: 'perfilAsignado',
+                attributes: ['id','nombre']
+            }
+        }
+    ]
+}

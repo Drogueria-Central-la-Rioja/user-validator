@@ -32,6 +32,20 @@ const { validateJWT } = require("../middlewares/validateJWT");
  
 /**
  * @swagger
+ * /profiles:
+ *  get:
+ *      summary: get list of profiles
+ *      tags: [Profile]
+ *      responses:
+ *          200:
+ *              description: profile list.
+ *          500:
+ *              description: internal server error.
+ */
+ router.get('/', perfilController.getProfiles);
+
+/**
+ * @swagger
  * /profiles/create:
  *  post:
  *      summary: create new profile
