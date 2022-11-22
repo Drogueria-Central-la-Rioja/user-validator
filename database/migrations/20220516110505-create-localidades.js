@@ -1,37 +1,31 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('perfiles_usuarios', {
+    await queryInterface.createTable('localidades', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      usuario_id: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        onDelete: 'NO ACTION',
-        references: {
-          model: 'usuarios',
-          key: 'id'
-        }
-      },
-      perfil_id: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        onDelete: 'NO ACTION',
-        references: {
-          model: 'perfiles',
-          key: 'id'
-        }
-      },
-      estado: {
+      nombre: {
         type: Sequelize.STRING
+      },
+      descripcion: {
+        type: Sequelize.STRING
+      },
+      departamento_id: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        onDelete: 'NO ACTION',
+        references: {
+          model: 'departamentos',
+          key: 'id'
+        }
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('perfiles_usuarios');
+    await queryInterface.dropTable('localidades');
   }
 };

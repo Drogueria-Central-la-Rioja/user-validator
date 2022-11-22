@@ -1,14 +1,21 @@
 const { Usuarios, sequelize } = require('../../models/index');
-const { transactionExecutedSuccessfully, recordCreationError, internalServerError, dataAlreadyExists, dataNotFound, dataNotAllowed, actionNotAllowed } = require('../helpers/responses');
+const { transactionExecutedSuccessfully, recordCreationError, internalServerError, dataAlreadyExists, dataNotFound, dataNotAllowed, actionNotAllowed, badRequestError } = require('../helpers/responses');
 const userService = require('../Services/user.service');
+const dependenceService = require('../Services/dependence.service');
+const locationService = require('../Services/location.service');
 const { generateJWT } = require('../helpers/jwt');
 const { encryptData } = require('../Utils/encryption');
 const { isAllowedStatus } = require('../Services/user.service');
 
 module.exports = {
     async getUsers(req, res){
-        const users = await userService.getAll();
-        return transactionExecutedSuccessfully(res, users);
+        try {
+            const users = await userService.getAll();
+            return transactionExecutedSuccessfully(res, users);
+        } catch (error) {
+            console.log(error);
+            return internalServerError(res, error.message);
+        }
     },
 
     async getUserInfo(req, res){
@@ -21,33 +28,32 @@ module.exports = {
             }
         } catch (error) {
             console.log(error);
-            return internalServerError(res, error);      
+            return internalServerError(res, error.message);      
         }
     },
 
     async createUser(req, res){
-
         try {
+            const { session_userId, body } = req;
             // Check session user profile
-            if(await userService.isAdmin(req.session_userId)){
+            if(await userService.isAdmin(session_userId)){
                 await sequelize.transaction( async (t) =>{
-                    // NOTE: Username validation missing
-                    const { username } = req.body;
-                    if(await userService.getByName(username) == null) {
-                        req.body.password = await encryptData(req.body.password);
-                        const newUser = await userService.create(req.body, t);
-                        if(newUser){
-                            const token = await generateJWT(newUser.id, newUser.usuario);
-                            let data = {
-                                usuario: newUser,
-                                token
-                            };
-                            return transactionExecutedSuccessfully(res, data);
-                        }else{
-                            return recordCreationError(res, 'Usuario')
-                        }
-                    } else {
-                        return dataAlreadyExists(res, 'Usuario', 'Username', username);
+                    const validations = await validateDataCreateUser(body, res);
+                    if(validations){
+                        return validations;
+                    }
+      
+                    body.password = await encryptData(body.password);
+                    const newUser = await userService.create(body, t);
+                    if(newUser){
+                        const token = await generateJWT(newUser.id, newUser.usuario);
+                        let data = {
+                            usuario: newUser,
+                            token
+                        };
+                        return transactionExecutedSuccessfully(res, data);
+                    }else{
+                        return recordCreationError(res, 'Usuario')
                     }
                 });  
             } else {
@@ -55,20 +61,24 @@ module.exports = {
             }       
         } catch (error) {
             console.log(error);
-            return internalServerError(res, error);
+            return internalServerError(res, error.message);
         }
     },
 
     async updateUserData(req, res) {
-
         try {
-            await sequelize.transaction( async (t) => {
-                await userService.updateData(req.params.user_id, req.body, t);
-                return transactionExecutedSuccessfully(res, null);
+            const { user_id } = req.params;
+            const user = await Usuarios.findByPk(user_id);
+            if(!user) {
+                return dataNotFound(res, 'Usuario');
+            }
+            const updated = await sequelize.transaction( async (t) => {
+                return await userService.updateData(user, req.body, t); 
             });
+            return transactionExecutedSuccessfully(res, await userService.getOne(updated.id));
         } catch (error) {
             console.log(error);
-            return internalServerError(res, error);
+            return internalServerError(res, error.message);
         }
     },
 
@@ -89,7 +99,7 @@ module.exports = {
             });
         } catch (error) {
             console.log(error);
-            return internalServerError(res, error);
+            return internalServerError(res, error.message);
         }
     },
 
@@ -111,7 +121,22 @@ module.exports = {
             }
         } catch (error) {
             console.log(error);
-            return internalServerError(res, error);
+            return internalServerError(res, error.message);
         }
+    }
+}
+
+async function validateDataCreateUser(data, res) {
+    const { username, dependencia_id, datosPersonales } = data;
+    if(username && await userService.getByName(username) != null) {
+        return dataAlreadyExists(res, 'Usuario', 'Username', username);
+    }
+
+    if(!await dependenceService.isAValidDependence(dependencia_id)) {
+        return dataNotFound(res, 'Dependencia');
+    }
+
+    if(!await locationService.isAValidLocation(datosPersonales.domicilioPersona.localidad_id)) {
+        return dataNotFound(res, 'Localidad');
     }
 }

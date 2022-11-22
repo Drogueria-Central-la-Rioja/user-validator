@@ -7,6 +7,19 @@ const userController = require('../Controllers/user.controller');
  * @swagger
  * components:
  *  schemas:
+ *      DomicilioPersona:
+ *          type: object
+ *          properties:
+ *              descripcion:
+ *                  type: string
+ *              direccion_completa:
+ *                  type: string
+ *              localidad_id:
+ *                  type: integer
+ *          required:
+ *              - descripcion
+ *              - direccion_completa
+ *              - localidad_id
  *      DatosPersonales:
  *          type: object
  *          properties:
@@ -20,52 +33,35 @@ const userController = require('../Controllers/user.controller');
  *                  type: string
  *              telefono:
  *                  type: string
- *                  description: Telefono personal.
- *              domicilio_completo:
- *                  type: string
- *                  description: Dirección del domicilio actual.
+ *              domicilioPersona:
+ *                   $ref: '#/components/schemas/DomicilioPersona'
  *          required:
  *              - nombres
  *              - apellidos
  *              - dni
  *              - email
- *          example:
- *              nombres: Juan
- *              apellidos: Perez
- *              dni: 39992342
- *              email: juancito@gmail.com
  *      User:
  *          type: object
  *          properties:
  *              username:
  *                  type: string
- *                  description: Nombre del usuario
  *              password:
  *                  type: string
- *                  description: Contraseña del usuario
  *              dependencia_id:
  *                  type: integer
- *                  description: ID de Dependencia del usuario
  *          required:
  *              - username
  *              - password
  *              - dependencia_id
- *          example:
- *              username: juanperez
- *              password: 123
- *              dependencia_id: 1
  *      NewUser:
  *          type: object
  *          properties:
  *              username:
  *                  type: string
- *                  description: Nombre del usuario
  *              password:
  *                  type: string
- *                  description: Contraseña del usuario
  *              dependencia_id:
  *                  type: integer
- *                  description: ID de Dependencia del usuario
  *              datosPersonales:
  *                   $ref: '#/components/schemas/DatosPersonales'
  *          required:
@@ -78,10 +74,8 @@ const userController = require('../Controllers/user.controller');
  *          properties:
  *              dependencia_id:
  *                  type: integer
- *                  description: ID de Dependencia del usuario
  *              estado:
  *                  type: string
- *                  description: Estado de la cuenta
  *              datosPersonales:
  *                   $ref: '#/components/schemas/DatosPersonales'
  *          required:
@@ -101,13 +95,13 @@ const userController = require('../Controllers/user.controller');
  * @swagger
  * /users:
  *  get:
- *      summary: Obtener lista de usuarios
+ *      summary: get list of users
  *      tags: [User]
  *      responses:
  *          200:
- *              description: Lista de usuarios.
+ *              description: user list.
  *          500:
- *              description: hubo un error interno.
+ *              description: internal server error.
  */
 router.get('/', userController.getUsers);
 
@@ -115,7 +109,7 @@ router.get('/', userController.getUsers);
  * @swagger
  * /users/{user_id}:
  *  get:
- *      summary: Obtener información de un usuario
+ *      summary: get user information
  *      tags: [User]
  *      parameters:
  *          - in: path
@@ -125,9 +119,9 @@ router.get('/', userController.getUsers);
  *            required: true
  *      responses:
  *          200:
- *              description: Información obtenida correctamente.
+ *              description: transaction executed successfully.
  *          500:
- *              description: Hubo un error interno.
+ *              description: internal server error.
  */
 router.get('/:user_id', userController.getUserInfo);
 
@@ -135,7 +129,7 @@ router.get('/:user_id', userController.getUserInfo);
  * @swagger
  * /users:
  *  post:
- *      summary: Crear un nuevo usuario
+ *      summary: create new user
  *      tags: [User]
  *      parameters:
  *          - in: header
@@ -152,9 +146,9 @@ router.get('/:user_id', userController.getUserInfo);
  *                      $ref: '#/components/schemas/NewUser'
  *      responses:
  *          200:
- *              description: Nuevo usuario creado.
+ *              description: user created successfully.
  *          500:
- *              description: Hubo un error interno.
+ *              description: internal server error.
  */
 router.post('/', validateJWT, userController.createUser);
 
@@ -162,7 +156,7 @@ router.post('/', validateJWT, userController.createUser);
  * @swagger
  * /users/{user_id}:
  *  patch:
- *      summary: Actualizar datos de un usuario
+ *      summary: update user data
  *      tags: [User]
  *      parameters:
  *          - in: header
@@ -184,9 +178,9 @@ router.post('/', validateJWT, userController.createUser);
  *                      $ref: '#/components/schemas/UpdateUser'
  *      responses:
  *          200:
- *              description: Usuario actualizado correctamente.
+ *              description: user updated successfully.
  *          500:
- *              description: Hubo un error interno.
+ *              description: internal server error.
  */
 router.patch('/:user_id', validateJWT, userController.updateUserData);
 
@@ -194,7 +188,7 @@ router.patch('/:user_id', validateJWT, userController.updateUserData);
  * @swagger
  * /users/{user_id}/change-status:
  *  patch:
- *      summary: Cambiar estado de un usuario
+ *      summary: change user status
  *      tags: [User]
  *      parameters:
  *          - in: header
@@ -216,9 +210,9 @@ router.patch('/:user_id', validateJWT, userController.updateUserData);
  *                      $ref: '#/components/schemas/ChangeStatusUser'
  *      responses:
  *          200:
- *              description: Cambio de estado exitoso.
+ *              description: status change successfully.
  *          500:
- *              description: Hubo un error interno.
+ *              description: internal server error.
  */
  router.patch('/:user_id/change-status', validateJWT, userController.changeStatusUser);
 
@@ -226,7 +220,7 @@ router.patch('/:user_id', validateJWT, userController.updateUserData);
  * @swagger
  * /users/{user_id}:
  *  delete:
- *      summary: Eliminar un usuario
+ *      summary: delete user
  *      tags: [User]
  *      parameters:
  *          - in: header
@@ -241,9 +235,9 @@ router.patch('/:user_id', validateJWT, userController.updateUserData);
  *            required: true
  *      responses:
  *          200:
- *              description: Usuario actualizado correctamente.
+ *              description: user deleted successfully.
  *          500:
- *              description: Hubo un error interno.
+ *              description: internal server error.
  */
 router.delete('/:user_id', validateJWT, userController.deleteUser);
 

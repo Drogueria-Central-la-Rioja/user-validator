@@ -17,11 +17,22 @@ module.exports = {
         type: Sequelize.STRING
       },
       persona_id: {
-        allowNull: true,
-        type: Sequelize.INTEGER
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'personas',
+          key: 'id'
+        }
       },
       dependencia_id: {
-        type: Sequelize.INTEGER
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        onDelete: 'NO ACTION',
+        references: {
+          model: 'dependencias',
+          key: 'id'
+        }
       },
       estado: {
         type: Sequelize.STRING

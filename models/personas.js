@@ -12,15 +12,16 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Personas.hasOne(models.Usuarios, { as: 'login', foreignKey: 'persona_id' });
+      Personas.belongsTo(models.Domicilios, { as: 'domicilioPersona', foreignKey: 'domicilio_id' });
     }
   }
   Personas.init({
-    nombres:            DataTypes.STRING,
-    apellidos:          DataTypes.STRING,
-    dni:                DataTypes.NUMBER,
-    email:              DataTypes.STRING,
-    telefono:           DataTypes.STRING,
-    domicilio_completo: DataTypes.STRING
+    nombres:      DataTypes.STRING,
+    apellidos:    DataTypes.STRING,
+    dni:          DataTypes.NUMBER,
+    email:        DataTypes.STRING,
+    telefono:     DataTypes.STRING,
+    domicilio_id: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Personas',

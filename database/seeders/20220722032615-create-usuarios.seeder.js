@@ -1,20 +1,21 @@
 'use strict';
 
 const { encryptData } = require('../../api/Utils/encryption');
-const { Personas } = require('../../models/index');
+const { Personas, Dependencias } = require('../../models/index');
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     
     let usuarios = [];
-    const personas = await Personas.findAll();
+    const personas = await Personas.findAll({limit:5});
+    const dependencias = await Dependencias.findAll({limit:5});
     const pass = await encryptData('123');
     personas.forEach((persona) => {
       usuarios.push({
         username:   'admin',
         password:   pass,
         persona_id: persona.id,
-        dependencia_id: 2,
+        dependencia_id: dependencias[0].id,
         estado: 'Activo',
         createdAt:  new Date(),
         updatedAt:  new Date()

@@ -1,27 +1,36 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('domicilios', {
+    await queryInterface.createTable('personas', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      descripcion: {
+      nombres: {
         type: Sequelize.STRING
       },
-      direccion_completa: {
+      apellidos: {
         type: Sequelize.STRING
       },
-      provincia_id: {
+      dni: {
         type: Sequelize.INTEGER
       },
-      departamento_id: {
-        type: Sequelize.INTEGER
+      email: {
+        type: Sequelize.STRING
       },
-      localidad_id: {
-        type: Sequelize.INTEGER
+      telefono: {
+        type: Sequelize.STRING
+      },
+      domicilio_id: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'domicilios',
+          key: 'id'
+        }
       },
       createdAt: {
         allowNull: false,
@@ -34,6 +43,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('domicilios');
+    await queryInterface.dropTable('personas');
   }
 };

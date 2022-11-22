@@ -18,7 +18,7 @@ const internalServerError = (res, error) =>{
     return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
         status:  HTTP_STATUS.INTERNAL_SERVER_ERROR,
         message: 'Hubo un error interno en el servidor.',
-        cause:   error
+        cause:   JSON.stringify(error)
     });
 }
 

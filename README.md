@@ -50,3 +50,6 @@ npm run start
 
 # Create models and migration with sequelize
 --> npx sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string
+
+# Generate seeders
+--> npx sequelize-cli seed:generate --name create-provincias
