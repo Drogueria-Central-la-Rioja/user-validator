@@ -17,7 +17,9 @@ module.exports = {
         codigo_remediar: 'KJFDDS24',
         domicilio_id: domicilios[0].id,
         nivel_atencion_id: niveles[0].id,
-        tipologia: 'test'
+        tipologia: 'test', 
+        createdAt: new Date(), 
+        updatedAt: new Date()
       }
     ], {});
   },
